@@ -1,6 +1,7 @@
 package com.example.hadevs.weather
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         startObservingCityField()
+        fab.setOnClickListener {
+            val intent = Intent(this, SearchPlaceActivity::class.java)
+            startActivityForResult(intent, 0)
+        }
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out) // slide animation
     }
 
     private var subject: PublishSubject<String>? = null
@@ -42,7 +48,6 @@ class MainActivity : AppCompatActivity() {
                 val text = cityTextField.text.toString()
                 subject?.onNext(text)
             }
-
         })
     }
 
