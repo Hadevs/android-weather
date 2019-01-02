@@ -1,15 +1,16 @@
 package com.example.hadevs.weather
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.example.hadevs.weather.managers.ApixuManager
 import com.example.hadevs.weather.models.ApixuCurrentResponse
 
 import kotlinx.android.synthetic.main.activity_main.*
-import java.net.URL
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,13 +20,16 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            ApixuManager.loadCurrentModel(cityTextField.text.toString()) {
+                this.updateText(it)
+            }
         }
+    }
 
-        ApiInteractor.request<ApixuCurrentResponse>(ApiInteractor.HTTPType.GET, URL("http://api.apixu.com/v1/current.json?key=c7825a578dd248cca3f00522190201&q=saints-petersburg")) {
-            Log.d(123.toString(), it.current?.temp_c.toString() + " PENIS PSA")
-        }
+    @SuppressLint("SetTextI18n")
+    fun updateText(responseModel: ApixuCurrentResponse) {
+        val temperature = responseModel.current?.temp_c.toString()
+        textView.text = "$temperature°C"
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
