@@ -10,6 +10,13 @@ class ApixuManager {
     companion object {
         private const val apixuHostString: String = "http://api.apixu.com/v1/"
         private const val apiKey: String = "c7825a578dd248cca3f00522190201"
+
+        fun loadCurrentModelWithCoordinates(lat: Double, lon: Double, callback: ItemClosure<ApixuCurrentResponse>) {
+            ApiInteractor.request<ApixuCurrentResponse>(ApiInteractor.HTTPType.GET, URL(apixuHostString + "current.json?key=" + apiKey + "&q=" + lat.toString() + "," + lon.toString())) {
+                callback(it)
+            }
+        }
+
         fun loadCurrentModel(city: String, callback: ItemClosure<ApixuCurrentResponse>) {
             ApiInteractor.request<ApixuCurrentResponse>(ApiInteractor.HTTPType.GET, URL(apixuHostString + "current.json?key=" + apiKey + "&q=" + city)) {
                 callback(it)

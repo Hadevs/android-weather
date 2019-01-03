@@ -11,6 +11,8 @@ import com.example.hadevs.weather.R
 import com.example.hadevs.weather.adapters.MainAdapter
 import com.example.hadevs.weather.data_providers.MainDataProvider
 import com.example.hadevs.weather.interactors.StorageInteractor
+import com.example.hadevs.weather.managers.ApixuManager
+import com.example.hadevs.weather.models.ApixuSearchResponse
 import io.paperdb.Paper
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -47,7 +49,19 @@ class MainActivity : AppCompatActivity() {
     private fun configureRecycleView() {
 
         searchCitiesView.layoutManager = LinearLayoutManager(this)
-        searchCitiesView.adapter = MainAdapter(dataProvider.data(), this)
+        val adapter = MainAdapter(dataProvider.data(), this)
+        adapter.clickedOnIndex = { index ->
+            val searchResponse = dataProvider.getElement(index)
+            searchResponse?.let { it ->
+                ApixuManager.loadCurrentModelWithCoordinates(it.lat, it.long) { weatherModel ->
+                    val temp = weatherModel.current?.temp_c ?: 0
+                    dataProvider.update(index, temp.toString())
+                    configureRecycleView()
+                }
+            }
+        }
+
+        searchCitiesView.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

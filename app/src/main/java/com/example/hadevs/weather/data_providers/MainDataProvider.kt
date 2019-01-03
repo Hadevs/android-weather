@@ -15,5 +15,18 @@ class MainDataProvider {
         }
     }
 
+    fun getElement(index: Int): ApixuSearchResponse? {
+        val savedStorageData = storage.load<ArrayList<ApixuSearchResponse>>("savedCities")
+        if (savedStorageData != null) {
+            return savedStorageData[index]
+        }
+
+        return null
+    }
+
+    fun update(index: Int, value: String) {
+        cities[index] = value
+    }
+
     fun dataCount(): Int = cities.size
 }
