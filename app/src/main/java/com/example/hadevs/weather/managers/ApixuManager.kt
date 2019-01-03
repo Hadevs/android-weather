@@ -3,6 +3,7 @@ package com.example.hadevs.weather.managers
 import com.example.hadevs.weather.help_classes.ItemClosure
 import com.example.hadevs.weather.interactors.ApiInteractor
 import com.example.hadevs.weather.models.ApixuCurrentResponse
+import com.example.hadevs.weather.models.ApixuSearchResponse
 import java.net.URL
 
 class ApixuManager {
@@ -12,6 +13,12 @@ class ApixuManager {
         fun loadCurrentModel(city: String, callback: ItemClosure<ApixuCurrentResponse>) {
             ApiInteractor.request<ApixuCurrentResponse>(ApiInteractor.HTTPType.GET, URL(apixuHostString + "current.json?key=" + apiKey + "&q=" + city)) {
                 callback(it)
+            }
+        }
+
+        fun searchCities(text: String, callback: ItemClosure<Array<ApixuSearchResponse>>) {
+            ApiInteractor.requestArray<ApixuSearchResponse>(ApiInteractor.HTTPType.GET, URL(apixuHostString + "search.json?key=" + apiKey + "&q=" + text)) {
+                callback(it.toTypedArray())
             }
         }
     }

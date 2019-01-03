@@ -20,6 +20,27 @@ class ApiInteractor<T> {
                 )
             }
 
+        inline fun <reified T> requestArray(type: HTTPType, url: URL, crossinline callback: ItemClosure<List<T>>) =
+            when (type) {
+                HTTPType.GET -> getArrayRequest(
+                    url,
+                    callback
+                )
+            }
+
+        inline fun <reified T> getArrayRequest(url: URL, crossinline callback: ItemClosure<List<T>>) {
+            doAsync {
+                val result = url.readText()
+                // we are in async thread now
+                val model = Klaxon().parseArray<T>(result)
+                model?.let { unboxmodel ->
+                    uiThread {
+                        callback(unboxmodel)
+                    }
+                }
+            }
+        }
+
         inline fun <reified T> getRequest(url: URL, crossinline callback: ItemClosure<T>) {
             doAsync {
                 val result = url.readText()
