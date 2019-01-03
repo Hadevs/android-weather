@@ -11,6 +11,7 @@ import com.example.hadevs.weather.R
 import com.example.hadevs.weather.adapters.MainAdapter
 import com.example.hadevs.weather.data_providers.MainDataProvider
 import com.example.hadevs.weather.interactors.StorageInteractor
+import io.paperdb.Paper
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Paper.init(this)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         fab.setOnClickListener {
@@ -34,20 +36,16 @@ class MainActivity : AppCompatActivity() {
         ) // slide animation
 
         configureRecycleView()
+    }
 
-        // testing storage
-        val storage = StorageInteractor()
-        storage.save(1)
-        storage.save(2)
-        storage.save(3)
-        storage.save(4)
-
-        val data = storage.load(Int)
-        Log.d("OPA NA", data.toString())
-
+    override fun onStart() {
+        super.onStart()
+        dataProvider.updateData()
+        configureRecycleView()
     }
 
     private fun configureRecycleView() {
+
         searchCitiesView.layoutManager = LinearLayoutManager(this)
         searchCitiesView.adapter = MainAdapter(dataProvider.data(), this)
     }

@@ -10,6 +10,7 @@ import android.util.Log
 import com.example.hadevs.weather.R
 import com.example.hadevs.weather.adapters.MainAdapter
 import com.example.hadevs.weather.data_providers.GenericDataProvider
+import com.example.hadevs.weather.help_classes.storage
 import com.example.hadevs.weather.managers.ApixuManager
 import com.example.hadevs.weather.models.ApixuSearchResponse
 import io.reactivex.subjects.PublishSubject
@@ -63,8 +64,11 @@ class SearchPlaceActivity : AppCompatActivity() {
         adapter = MainAdapter(str, this)
         adapter?.clickedOnIndex = {
             Log.d("CLICK", "Clicked at: $it")
+            val element = dataProvider.get(it)
+            storage.addIfCan("savedCities", element)
+            this.finish()
         }
-        searchCitiesView.adapter = adapter
 
+        searchCitiesView.adapter = adapter
     }
 }

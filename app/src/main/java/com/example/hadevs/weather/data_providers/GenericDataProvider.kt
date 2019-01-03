@@ -10,4 +10,8 @@ class GenericDataProvider<T> {
     fun update(data: Array<T>) {
         arrayData = data.toCollection(ArrayList())
     }
+
+    fun get(index: Int): T {
+        return data()[index]
+    }
 }
